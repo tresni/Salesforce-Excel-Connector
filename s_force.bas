@@ -420,7 +420,13 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
             str = SFDC_escape_q(str) ' escape some chars
             vu = salesforce.ref_id(str, field_obj.ReferenceTo) ' map strs to refid's 5.46
             
-            If Len(clause) > 0 Then clause = clause & " or " ' prepend an or
+            If Len(clause) > 0 Then
+                If (opr Like "!=") Then
+                    clause = clause & " and "
+                Else
+                    clause = clause & " or " ' prepend an or
+                End If
+            End If
             If (opr Like "like") Then vu = "%" & vu & "%"  ' wrap like string with wildcard
             If (opr Like "begins with" Or opr Like "starts with") Then vu = vu & "%" ' wildcar at front
             If (opr Like "ends with") Then vu = "%" & vu ' wlidcard at end
