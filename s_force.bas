@@ -384,7 +384,7 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
     End If
     
     ' special case 'in' and a ref field
-    If ((opr = "in" Or opr = "on") And field_obj.Type = "reference") Then
+    If ((opr = "in" Or opr = "on") And (field_obj.Type = "reference" Or field_obj.Type = "Id")) Then
       If (opr = "on") Then oneeachrow = True
       Set refIds = build_ref_range(vlu) ' list of IDs to use in join
       joinfield = field_obj.name ' save for later, should be only one..
