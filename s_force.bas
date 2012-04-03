@@ -482,8 +482,10 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
       ' 500 is pretty much the max as that's 9000 characters right there
       ' 2 to UBound(in_values) to see if the next id will set us over the limit
       ' 22 character per Id/Reference (18 characters from SFDC + "', '")
-      If (preJoinLen + ((UBound(in_values) + 2) * 21) >= 10000) Or _
-        UBound(in_values) = 500 Then
+      ' ON queries require 1 select per row which is weak sauce
+      ' TODO: Optimize ON queries
+      If ((preJoinLen + ((UBound(in_values) + 2) * 21) >= 10000) Or _
+        UBound(in_values) = 500) Or opr = "on" Then
         
         tmp = where
         If (where <> "" And Right(where, 4) <> "and ") Then tmp = where & " and " ' 5.56
