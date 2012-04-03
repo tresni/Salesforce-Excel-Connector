@@ -490,6 +490,7 @@ done:
 donedone:
   Application.ScreenUpdating = True
   RowsReturned = outrow - 1 ' 6.12
+  Application.StatusBar = False
 End Sub
 '
 ' aka: refresh
