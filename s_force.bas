@@ -373,7 +373,9 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
       Case "contains": opr = "like"
       Case "not equals": opr = "!="
       Case "less than": opr = "<"
+      Case "less than or equals to": opr = "<="
       Case "greater than": opr = ">"
+      Case "greater than or equals to": opr = ">="
     End Select
     
     ' 5.23 basic error check, 5.0 checks for this anyway but we know where the offending cell is
@@ -1567,7 +1569,9 @@ Public Function queryWizard_init()
   queryWiz.operator.AddItem "starts with"
   queryWiz.operator.AddItem "ends with"
   queryWiz.operator.AddItem "less than"
+  queryWiz.operator.AddItem "less than or equal to"
   queryWiz.operator.AddItem "greater than"
+  queryWiz.operator.AddItem "greater than or equal to"
   queryWiz.operator.AddItem "includes"
   queryWiz.operator.AddItem "excludes"
   queryWiz.operator.AddItem "regexp"
