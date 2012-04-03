@@ -466,16 +466,42 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
   If refIds Is Nothing Then
     outrow = query_draw(sels, " where " & where, outrow, False) ' just one query
   Else
-  ' TODO this could be optimized to pull multiple ref's at one query call
-  ' should speed things up on large joins there is lots of overhead now
-  '
-    Dim c As Range, tmp$
+    Dim c As Range, tmp$, preJoinLen
+    Dim in_values() As Variant
+    ReDim in_values(0) As Variant
+    
+    ' 18 characters of control for query_draw ("select data from ", " ")
+    ' 20 characters of control for where clause (" and ", " where ", " IN ('", "')")
+    preJoinLen = Len(g_objectType) + Len(where) + Len(joinfield) + 18 + 20
+    
     For Each c In refIds.Cells ' loop over a range to output a join
+      in_values(UBound(in_values)) = c.value
+      
+      ' There is a limit of 10,000 characters in a query, let's try to make sure we
+      ' aren't going to go over that by estimating the length of our query.
+      ' 500 is pretty much the max as that's 9000 characters right there
+      ' 2 to UBound(in_values) to see if the next id will set us over the limit
+      ' 22 character per Id/Reference (18 characters from SFDC + "', '")
+      If (preJoinLen + ((UBound(in_values) + 2) * 21) >= 10000) Or _
+        UBound(in_values) = 500 Then
+        
+        tmp = where
+        If (where <> "" And Right(where, 4) <> "and ") Then tmp = where & " and " ' 5.56
+        tmp = tmp & joinfield & " IN ('" & Join(in_values, "','") & "')" ' use the ID from the reference colum in each query
+        outrow = query_draw(sels, " where " & tmp, outrow, oneeachrow)
+        ReDim in_values(0) As Variant
+      Else
+        ReDim Preserve in_values(UBound(in_values) + 1) As Variant
+      End If
+    Next c
+    
+    ' Catch any that didn't fit previous queries
+    If UBound(in_values) <> 1 And in_values(0) <> "" Then
       tmp = where
       If (where <> "" And Right(where, 4) <> "and ") Then tmp = where & " and " ' 5.56
-      tmp = tmp & joinfield & " = '" & c.value & "'" ' use the ID from the reference colum in each query
+      tmp = tmp & joinfield & " IN ('" & Join(in_values, "', '") & "')" ' use the ID from the reference colum in each query
       outrow = query_draw(sels, " where " & tmp, outrow, oneeachrow)
-    Next c
+    End If
    
   End If
   If (outrow <= 1) Then sfError "No data returned for this Query"
