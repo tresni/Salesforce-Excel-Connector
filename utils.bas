@@ -356,7 +356,11 @@ Function sfQueryValueFormat(typ, vlu)
           vlu = DateAdd("d", incr, today)
         End If ' 5.12 end
         
-        sfQueryValueFormat = Format$(vlu, "yyyy-mm-ddTHH:MM:SS.000Z")
+        If (typ = "datetime") Then
+            sfQueryValueFormat = Format$(vlu, "yyyy-mm-ddTHH:MM:SS.000Z")
+        Else
+            sfQueryValueFormat = Format$(vlu, "yyyy-mm-dd")
+        End If
         
       Case "double", "currency", "percent":  ' add percent per Scot S. 5.67
         If (InStr(vlu, ".")) Then
