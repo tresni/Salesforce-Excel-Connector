@@ -26,6 +26,75 @@ Global Const KEY_ALL_ACCESS = &H3F
  
 Global Const REG_OPTION_NON_VOLATILE = 0
 
+#If VBA7 Then    ' VBA7
+Declare PtrSafe Function RegCloseKey Lib "advapi32.dll" (ByVal hKey As LongPtr) As Long
+
+Declare PtrSafe Function RegCreateKeyEx Lib "advapi32.dll" Alias "RegCreateKeyExA" _
+    (ByVal hKey As LongPtr, _
+    ByVal lpSubKey As String, _
+    ByVal Reserved As Long, _
+    ByVal lpClass As String, _
+    ByVal dwOptions As Long, _
+    ByVal samDesired As Long, _
+    ByVal lpSecurityAttributes As Long, _
+    phkResult As LongPtr, _
+    lpdwDisposition As Long) As Long
+    
+Public Declare PtrSafe Function RegOpenKeyEx Lib "advapi32.dll" _
+    Alias "RegOpenKeyExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpSubKey As String, _
+    ByVal ulOptions As Long, _
+    ByVal samDesired As Long, _
+    phkResult As LongPtr) As Long
+    
+Public Declare PtrSafe Function RegQueryValueExString Lib "advapi32.dll" _
+    Alias "RegQueryValueExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpValueName As String, _
+    ByVal lpReserved As Long, _
+    lpType As Long, _
+    lpData As String, _
+    lpcbData As Long) As Long
+    
+Public Declare PtrSafe Function RegQueryValueExLong Lib "advapi32.dll" _
+    Alias "RegQueryValueExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpValueName As String, _
+    ByVal lpReserved As Long, _
+    lpType As Long, _
+    lpData As Long, _
+    lpcbData As Long) As Long
+    
+Public Declare PtrSafe Function RegQueryValueExNULL Lib "advapi32.dll" _
+    Alias "RegQueryValueExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpValueName As String, _
+    ByVal lpReserved As Long, _
+    lpType As Long, _
+    lpData As Long, _
+    lpcbData As Long) As Long
+    
+Public Declare PtrSafe Function RegSetValueExString Lib "advapi32.dll" _
+    Alias "RegSetValueExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpValueName As String, _
+    ByVal Reserved As Long, _
+    ByVal dwType As Long, _
+    lpData As String, _
+    ByVal cbData As Long) As Long
+    
+ Public Declare PtrSafe Function RegSetValueExLong Lib "advapi32.dll" _
+    Alias "RegSetValueExA" ( _
+    ByVal hKey As LongPtr, _
+    ByVal lpValueName As String, _
+    ByVal Reserved As Long, _
+    ByVal dwType As Long, _
+    lpData As Long, _
+    ByVal cbData As Long) As Long
+
+#Else    ' Downlevel when using previous version of VBA7
+
 Declare Function RegCloseKey Lib "advapi32.dll" _
     (ByVal hKey As Long) As Long
 
@@ -64,6 +133,8 @@ Declare Function RegSetValueExLong Lib "advapi32.dll" Alias _
     "RegSetValueExA" (ByVal hKey As Long, ByVal lpValueName As String, _
     ByVal Reserved As Long, ByVal dwType As Long, lpValue As Long, _
     ByVal cbData As Long) As Long
+    
+#End If
 
 
 Public Function SetValueEx(ByVal hKey As Long, sValueName As String, _
