@@ -484,7 +484,7 @@ Sub sfQuery(Optional RowsReturned As Integer) ' 6.12
       ' ON queries require 1 select per row which is weak sauce
       ' TODO: Optimize ON queries
       If (preJoinLen + ((UBound(in_values) + 2) * 21) >= 10000) Or _
-        opr = "on" Then
+        oneeachrow Then
         
         tmp = where
         If (where <> "" And Right(where, 4) <> "and ") Then tmp = where & " and " ' 5.56
