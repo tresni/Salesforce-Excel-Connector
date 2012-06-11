@@ -857,7 +857,7 @@ Sub sfInsertRow()
   
   If Not QueryRegBool(GOAHEAD) Then
     Dim msg ' warn the user that they are writing to the database
-    msg = "You are about to INSESRT: " & CStr(Selection.Rows.Count) & " " & g_objectType & _
+    msg = "You are about to INSERT: " & CStr(Selection.Rows.Count) & " " & g_objectType & _
      " record(s) in to Salesforce.com"
     msg = msg & vbCrLf
     If (MsgBox(msg, vbApplicationModal + vbOKCancel + vbExclamation + vbDefaultButton1, _
